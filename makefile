@@ -63,7 +63,6 @@ install: libc.a $(AOBJS)
 	cp crtn.o $(PREFIX)/lib/gcc/$(TARGET)/$(CCVER)
 	cp crti.o $(PREFIX)/lib/gcc/$(TARGET)/$(CCVER)
 	cp libc.a $(PREFIX)/lib/gcc/$(TARGET)/$(CCVER)/libc.a
-	cp libc.a $(PREFIX)/lib/gcc/$(TARGET)/$(CCVER)/libgcc.a
 	cp include $(PREFIX)/lib/gcc/$(TARGET)/$(CCVER) -r
 
 clean:
