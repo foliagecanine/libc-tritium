@@ -154,7 +154,3 @@ size_t terminal_getcolumn() {
 size_t terminal_getrow() {
 	return terminal_row;
 }
-
-void exit(uint32_t code) {
-	asm("mov $2,%eax;int $0x80");
-}

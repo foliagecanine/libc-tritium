@@ -36,6 +36,11 @@ uint32_t exec_args(char *name, char **arguments, char **environment) {
 	return retval;
 }
 
+void exit(uint32_t code) {
+	asm("mov %0,%%ebx; mov $2,%%eax;int $0x80"::"m"(code));
+	while(1);
+}
+
 void yield() {
 	syscall(6);
 }
