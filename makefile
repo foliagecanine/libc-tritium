@@ -8,7 +8,7 @@ endif
 CC=$(TARGETPREFIX)gcc
 AR=$(TARGETPREFIX)ar
 NASM=nasm
-CLFAGS?=
+CLFAGS?=-Iinclude -nostdlib -fno-builtin
 PREFIX?=./sysroot
 
 COBJS=\
@@ -52,7 +52,7 @@ libc.a: $(COBJS)
 	$(AR) cr libc.a $(COBJS)
 
 .c.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) $(CLFAGS) -c $< -o $@
 
 .asm.o:
 	$(NASM) -felf32 $< -o $@

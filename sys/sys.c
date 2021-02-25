@@ -5,7 +5,7 @@ char **envp;
 
 char *getenv(char *name) {
 	for (uint32_t i = 0; i < envc; i+=2) {
-		if (strcmp(envp[i],name))
+		if (!strcmp(envp[i],name))
 			return envp[i+1];
 	}
 	return 0;

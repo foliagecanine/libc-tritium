@@ -5,7 +5,7 @@
 
 size_t terminal_row;
 size_t terminal_column;
-uint8_t terminal_color;
+uint8_t terminal_color = 0x07;
 uint16_t terminal_buffer[VGA_WIDTH*VGA_HEIGHT];
 bool scroll = true;
 
