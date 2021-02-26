@@ -141,6 +141,8 @@ void __fselect_draw_select(bool newfile_button) {
 	drawrect(22,7,36,15,0xF0);
 }
 
+char testdisk[] = "#:/";
+
 char *__fselect_select(bool newfile) {
 	for (uint8_t i = __fselect_min; i < __fselect_min+12; i++) {
 		if (i==__fselect_selected) {
@@ -181,10 +183,10 @@ char *__fselect_select(bool newfile) {
 		}
 		if (g==0x1C) {
 			getchar();
-			if (strcmp(__fselect_name[__fselect_selected],"../                           ")) {
-				*strrchr(__fselect_cd,'/')=0;
+			if (!strcmp(__fselect_name[__fselect_selected],"../                           ")) {
 				*(strrchr(__fselect_cd,'/')+1)=0;
-			} else if (strcmp(__fselect_name[__fselect_selected],"./                            ")) {
+				*strrchr(__fselect_cd,'/')=0;
+			} else if (!strcmp(__fselect_name[__fselect_selected],"./                            ")) {
 			} else if (strchr(__fselect_name[__fselect_selected],'/')) {
 				*(strrchr(__fselect_name[__fselect_selected],'/')+1)=0;
 				strcpy(__fselect_cd+strlen(__fselect_cd),__fselect_name[__fselect_selected]);
@@ -205,7 +207,6 @@ char *__fselect_select(bool newfile) {
 			terminal_goto(24,7);
 			printf("Use the cursor to select a disk:");
 			__fselect_numdisks = 0;
-			char *testdisk = "#:/";
 			for (uint8_t i = 0; i < 8; i++) {
 				testdisk[0] = 65+i;
 				FILE f = fopen(testdisk,"r");

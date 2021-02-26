@@ -26,6 +26,7 @@ string/memcpy.o \
 string/memmove.o \
 string/strchr.o \
 string/strcmp.o \
+string/strncmp.o \
 string/strcpy.o \
 string/strcut.o \
 string/strlen.o \

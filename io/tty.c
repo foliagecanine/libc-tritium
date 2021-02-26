@@ -78,7 +78,7 @@ void terminal_scroll() {
 void terminal_putchar(char c) {
 	terminal_getcursor();
 	unsigned char uc = c;
-	if (c!='\n')
+	if (c!='\n' && c!='\t')
 		terminal_putentryat(uc, terminal_color, terminal_column, terminal_row);
 	if (++terminal_column == VGA_WIDTH || c == '\n') {
 		terminal_column = 0;
@@ -87,6 +87,9 @@ void terminal_putchar(char c) {
 			terminal_scroll();
 		}
 	}
+	if (c == '\t')
+		for (int i = terminal_column%4; i < 4; i++)
+			terminal_putentryat(' ', terminal_color, terminal_column++, terminal_row);
 	terminal_setlocation();
 }
 
