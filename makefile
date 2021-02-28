@@ -34,6 +34,7 @@ string/strrchr.o \
 string/tolower.o \
 string/toupper.o \
 sys/sys.o \
+stdlib/malloc.o \
 
 AOBJS=\
 crt0.o \

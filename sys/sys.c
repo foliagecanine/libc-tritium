@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int envc;
 char **envp;
@@ -11,59 +12,68 @@ char *getenv(char *name) {
 	return 0;
 }
 
-static inline void syscall(unsigned int syscall_num) {
-	asm volatile("mov %0,%%eax;int $0x80"::"r"(syscall_num));
+void _late_init_stdlib() {
+	_init_malloc();
+}
+
+static inline uint32_t syscall0(uint32_t syscall_num) {
+	uint32_t retval;
+	asm volatile("int $0x80":"=a"(retval):"a"(syscall_num):"memory");
+	return retval;
+}
+
+static inline uint32_t syscall1(uint32_t syscall_num, uint32_t param1) {
+	uint32_t retval;
+	asm volatile("int $0x80":"=a"(retval):"a"(syscall_num),"b"(param1):"memory");
+	return retval;
+}
+
+static inline uint32_t syscall2(uint32_t syscall_num, uint32_t param1, uint32_t param2) {
+	uint32_t retval;
+	asm volatile("int $0x80":"=a"(retval):"a"(syscall_num),"b"(param1),"c"(param2):"memory");
+	return retval;
+}
+
+static inline uint32_t syscall3(uint32_t syscall_num, uint32_t param1, uint32_t param2, uint32_t param3) {
+	uint32_t retval;
+	asm volatile("int $0x80":"=a"(retval):"a"(syscall_num),"b"(param1),"c"(param2),"d"(param3):"memory");
+	return retval;
 }
 
 void writestring(char *string) {
-	asm volatile("mov %0,%%ebx"::"r"(string));
-	syscall(0);
+	syscall1(0,(uint32_t)(uintptr_t)string);
 }
 
 uint32_t exec(char *name) {
-	uint32_t retval;
-	asm volatile("mov %0,%%ebx; mov $0,%%ecx; mov $0,%%edx"::"r"(name));
-	syscall(1);
-	asm volatile("mov %%eax,%0":"=m"(retval):);
-	return retval;
+	return syscall3(1,(uint32_t)(uintptr_t)name,0,0);
 }
 
 uint32_t exec_args(char *name, char **arguments, char **environment) {
-	uint32_t retval;
-	asm volatile("pusha; mov %0,%%ebx; mov %1,%%ecx; mov %2,%%edx"::"m"(name),"m"(arguments),"m"(environment));
-	syscall(1);
-	asm volatile("mov %%eax,%0; popa":"=m"(retval):);
-	return retval;
+	return syscall3(1,(uint32_t)(uintptr_t)name,(uint32_t)(uintptr_t)arguments,(uint32_t)(uintptr_t)environment);
 }
 
 void exit(uint32_t code) {
-	asm("mov %0,%%ebx; mov $2,%%eax;int $0x80"::"m"(code));
+	syscall1(2,code);
 	while(1);
 }
 
 void yield() {
-	syscall(6);
+	syscall0(6);
 }
 
 uint32_t waitpid(uint32_t pid) {
-	uint32_t retval = 1;
-	asm volatile("pusha; mov %0,%%ebx"::"r"(pid));
-	syscall(10); //waitpid
-	syscall(11); //get_retval
-	asm volatile("mov %%eax,%0; popa":"=m"(retval):);
-	return retval;
+	syscall1(10,pid);
+	return syscall0(11);
 }
 
 uint32_t getpid() {
-	uint32_t retval;
-	syscall(7);
-	asm volatile("mov %%eax,%0":"=m"(retval):);
-	return retval;
+	return syscall0(7);
 }
 
 uint32_t fork() {
-	uint32_t retval;
-	syscall(25);
-	asm volatile("mov %%eax,%0":"=m"(retval));
-	return retval;
+	return syscall0(25);
+}
+
+void *map_mem(void *address) {
+	return (void *)(uintptr_t)syscall1(26,(uint32_t)(uintptr_t)address);
 }

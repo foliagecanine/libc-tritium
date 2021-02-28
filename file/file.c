@@ -16,7 +16,6 @@ FILE fopen (const char* filename, const char* mode) {
 }
 
 uint8_t fread (FILE *t, char *buf, uint64_t start, uint64_t len) {
-	printf("FOPEN\n");
 	uint8_t retval;
 	uint32_t starth = start>>32;
 	uint32_t startl = start&0xFFFFFFFF;

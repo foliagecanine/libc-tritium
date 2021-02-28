@@ -70,10 +70,6 @@ FILE fcreate(char *filename);
 uint8_t fdelete(char *filename);
 FILE readdir(FILE *d, char* buf, uint32_t n);
 
-char *getenv(char *name);
-
-void exit(uint32_t code);
-
 #ifdef __cplusplus
 }
 #endif

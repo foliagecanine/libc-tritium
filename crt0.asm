@@ -7,6 +7,8 @@ extern exit
 extern envc
 extern envp
 
+extern _late_init_stdlib
+
 global _start
 _start:
 	mov ebp,0
@@ -14,20 +16,22 @@ _start:
 	push ebp
 	mov ebp,esp
 	
-	call init_stdlib
+	call _early_init_stdlib
 
 	push ecx
 	push eax
 
 	call _init
+	
+	call _late_init_stdlib
 
 	call main
 
 	push eax
 	call exit
 
-global init_stdlib
-init_stdlib:
+global _early_init_stdlib
+_early_init_stdlib:
 	mov [envc],ebx
 	mov [envp],edx
 	ret
