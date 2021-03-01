@@ -102,15 +102,15 @@ void __fselect_update() {
 	__fselect_count = 0;
 	__fselect_min = 0;
 	__fselect_selected = 0;
-	FILE currdir;
+	FILE *currdir;
 	char buf[31];
 	currdir = fopen(__fselect_cd,"r");
 	memset(__fselect_name,0,sizeof(char)*16*31);
-	FILE r = currdir;
-	for (uint8_t i = 0; i < 16 && r.valid; i++) {
+	FILE *r = currdir;
+	for (uint8_t i = 0; i < 16; i++) {
 		memset(buf,0,31);
-		r = readdir(&currdir,buf,i);
-		if (r.valid&&buf[0]) {
+		r = readdir(currdir,buf,i);
+		if (r->valid&&buf[0]) {
 			memset(__fselect_name[__fselect_count],' ',30);
 			memcpy(__fselect_name[__fselect_count],buf,strlen(buf));
 			for (uint8_t j = 0; j < 30; j++) {
@@ -184,8 +184,8 @@ char *__fselect_select(bool newfile) {
 		if (g==0x1C) {
 			getchar();
 			if (!strcmp(__fselect_name[__fselect_selected],"../                           ")) {
-				*(strrchr(__fselect_cd,'/')+1)=0;
 				*strrchr(__fselect_cd,'/')=0;
+				*(strrchr(__fselect_cd,'/')+1)=0;
 			} else if (!strcmp(__fselect_name[__fselect_selected],"./                            ")) {
 			} else if (strchr(__fselect_name[__fselect_selected],'/')) {
 				*(strrchr(__fselect_name[__fselect_selected],'/')+1)=0;
@@ -209,8 +209,8 @@ char *__fselect_select(bool newfile) {
 			__fselect_numdisks = 0;
 			for (uint8_t i = 0; i < 8; i++) {
 				testdisk[0] = 65+i;
-				FILE f = fopen(testdisk,"r");
-				if (f.valid) {
+				FILE *fp = fopen(testdisk,"r");
+				if (fp->valid) {
 					__fselect_disks[__fselect_numdisks] = i;
 					__fselect_numdisks++;
 				}

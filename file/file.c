@@ -1,89 +1,91 @@
 #include <stdio.h>
 
-FILE f;
-FILE *fp;
-
-FILE fopen (const char* filename, const char* mode) {
-	fp = &f;
-	asm volatile("pusha;\
-				mov %0,%%ebx;\
-				mov %1,%%ecx;\
-				mov %2, %%edx;\
-				mov $12,%%eax;\
-				int $0x80;\
-				popa"::"m"(fp),"m"(filename),"m"(mode):"memory");
-	return f;
-}
-
-uint8_t fread (FILE *t, char *buf, uint64_t start, uint64_t len) {
-	uint8_t retval;
-	uint32_t starth = start>>32;
-	uint32_t startl = start&0xFFFFFFFF;
-	//uint32_t lenh = len>>32;
-	uint32_t lenl = len&0xFFFFFFFF;
-	asm volatile("pusha;\
-				mov %1,%%ebx;\
-				mov %2,%%ecx;\
-				mov %3, %%edx;\
-				mov %4, %%esi;\
-				mov %5, %%edi;\
-				mov $13,%%eax;\
-				int $0x80;\
-				mov %%eax,%0;\
-				popa":"=m"(retval):"m"(t),"m"(buf),"m"(starth),"m"(startl),"m"(lenl));
+static char *expand_fname(const char *filename) {
+	char *retval;
+	if (filename[1]!=':') {
+		char *cd = getenv("CD");
+		if (!cd) {
+			if (!retval)
+				return NULL;
+		}
+		retval = malloc(strlen(filename)+strlen(cd)+1);
+		if (!retval)
+			return NULL;
+		strcpy(retval,cd);
+		strcpy(retval+strlen(cd),filename);
+		retval[strlen(cd)+strlen(filename)] = 0;
+		return retval;
+	}
+	retval = malloc(strlen(filename)+1);
+	if (!retval)
+		return NULL;
+	strcpy(retval,filename);
+	retval[strlen(filename)] = 0;
 	return retval;
 }
 
-uint8_t fwrite (FILE *t, char *buf, uint64_t start, uint64_t len) {
+FILE null_file = {0};
+
+FILE *fopen (const char* filename, const char* mode) {
+	FILE *fp = calloc(1,sizeof(FILE));
+	if (!fp)
+		return &null_file;
+	char *full_filename = expand_fname(filename);
+	if (!full_filename)
+		return fp;
+	_syscall3(12,(uintptr_t)fp,(uintptr_t)full_filename,(uintptr_t)mode);
+	free(full_filename);
+	return fp;
+}
+
+uint8_t fread (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	uint8_t retval;
 	uint32_t starth = start>>32;
 	uint32_t startl = start&0xFFFFFFFF;
-	//uint32_t lenh = len>>32;
-	uint32_t lenl = len&0xFFFFFFFF;
-	asm volatile("pusha;\
-				mov %1,%%ebx;\
-				mov %2,%%ecx;\
-				mov %3, %%edx;\
-				mov %4, %%esi;\
-				mov %5, %%edi;\
-				mov $14,%%eax;\
-				int $0x80;\
-				mov %%eax,%0;\
-				popa":"=m"(retval):"m"(t),"m"(buf),"m"(starth),"m"(startl),"m"(lenl));
+	retval = (uint8_t)_syscall5(13,(uintptr_t)t,(uintptr_t)buf,starth,startl,len);
 	return retval;
 }
 
-FILE fcreate(char *filename) {
-	fp = &f;
-	asm volatile("pusha;\
-				mov %0,%%ebx;\
-				mov %1,%%ecx;\
-				mov $15,%%eax;\
-				int $0x80;\
-				popa"::"m"(filename),"m"(fp));
-	return f;
+uint8_t fwrite (FILE *t, char *buf, uint64_t start, uint32_t len) {
+	uint8_t retval;
+	uint32_t starth = start>>32;
+	uint32_t startl = start&0xFFFFFFFF;
+	retval = (uint8_t)_syscall5(14,(uintptr_t)t,(uintptr_t)buf,starth,startl,len);
+	return retval;
+}
+
+FILE *fcreate(char *filename) {
+	FILE *fp = calloc(1,sizeof(FILE));
+	if (!fp)
+		return &null_file;
+	char *full_filename = expand_fname(filename);
+	if (!full_filename)
+		return fp;
+	_syscall2(15,(uintptr_t)full_filename,(uintptr_t)fp);
+	free(full_filename);
+	return fp;
 }
 
 uint8_t fdelete(char *filename) {
-	uint8_t retval;
-	asm volatile("pusha;\
-				mov %1,%%ebx;\
-				mov $16,%%eax;\
-				int $0x80;\
-				mov %%al,%0;\
-				popa":"=m"(retval):"m"(filename));
+	char *full_filename = expand_fname(filename);
+	if (!full_filename)
+		return 1;
+	uint8_t retval = _syscall1(16,(uintptr_t)full_filename);
+	free(full_filename);
 	return retval;
 }
 
-FILE readdir(FILE *d, char* buf, uint32_t n) {
-	fp = &f;
-	asm volatile("pusha;\
-				mov %0,%%ebx;\
-				mov %1,%%ecx;\
-				mov %2, %%edx;\
-				mov %3, %%esi;\
-				mov $18,%%eax;\
-				int $0x80;\
-				popa"::"m"(fp),"m"(d),"m"(buf),"m"(n));
-	return f;
+FILE *readdir(FILE *d, char* buf, uint32_t n) {
+	FILE *fp = calloc(1,sizeof(FILE));
+	if (!fp)
+		return &null_file;
+	_syscall4(18,(uintptr_t)d,(uintptr_t)fp,(uintptr_t)buf,n);
+	return fp;
+}
+
+int fclose(FILE *fp) {
+	if (!fp)
+		return 1;
+	free(fp);
+	return 0;
 }

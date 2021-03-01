@@ -1,7 +1,13 @@
 #ifndef _SYS_H
 #define _SYS_H
 
-static inline void syscall(unsigned int syscall_num);
+uint32_t _syscall0(uint32_t syscall_num);
+uint32_t _syscall1(uint32_t syscall_num, uint32_t param1);
+uint32_t _syscall2(uint32_t syscall_num, uint32_t param1, uint32_t param2);
+uint32_t _syscall3(uint32_t syscall_num, uint32_t param1, uint32_t param2, uint32_t param3);
+uint32_t _syscall4(uint32_t syscall_num, uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4);
+uint32_t _syscall5(uint32_t syscall_num, uint32_t param1, uint32_t param2, uint32_t param3, uint32_t param4, uint32_t param5);
+
 void writestring(char *string);
 uint32_t exec(char *name);
 uint32_t exec_args(char *name, char **arguments, char **environment);

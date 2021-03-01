@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <sys.h>
 #include <tty.h>
+#include <stdlib.h>
 
 #define EOF (-1)
 
@@ -63,12 +64,13 @@ typedef struct {
 	_Bool directory;
 } FILE, *PFILE;
 
-FILE fopen(const char* filename, const char* mode);
-uint8_t fread(FILE *file, char *buf, uint64_t start, uint64_t len);
-uint8_t fwrite(FILE *file, char *buf, uint64_t start, uint64_t len);
-FILE fcreate(char *filename);
+FILE *fopen(const char* filename, const char* mode);
+uint8_t fread(FILE *file, char *buf, uint64_t start, uint32_t len);
+uint8_t fwrite(FILE *file, char *buf, uint64_t start, uint32_t len);
+FILE *fcreate(char *filename);
 uint8_t fdelete(char *filename);
-FILE readdir(FILE *d, char* buf, uint32_t n);
+FILE *readdir(FILE *d, char* buf, uint32_t n);
+int fclose(FILE *fp);
 
 #ifdef __cplusplus
 }
