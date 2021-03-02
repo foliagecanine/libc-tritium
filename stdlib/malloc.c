@@ -62,6 +62,8 @@ void _init_malloc() {
 	root_alloc->prev = NULL;
 }
 
+int printf(const char *format, ...);
+
 void *malloc(size_t size) {
 	alloc_t *current_alloc = root_alloc;
 	while(true) {
@@ -81,10 +83,11 @@ void *malloc(size_t size) {
 			}
 		}
 		if (current_alloc->size > size) {
-			if (current_alloc->size < size + sizeof(alloc_t)) {
+			if (current_alloc->size < size + sizeof(alloc_t) + sizeof(alloc_t)) {
 				// Not enough space for a new alloc. Treat as if equal.
 				if (current_alloc == last_alloc) {
-					grow_heap();
+					if (!grow_heap())
+						return 0;
 					current_alloc->size += 4096;
 					// Assume sizeof(alloc_t) < 4096
 				} else {
@@ -117,6 +120,8 @@ void *malloc(size_t size) {
 				if (current_alloc->size >= size)
 					break;
 			}
+		} else if (current_alloc->size < size) {
+			current_alloc = current_alloc->next;
 		}
 	}
 }
@@ -134,6 +139,7 @@ void free(void *ptr) {
 		if (current_alloc->next == NULL)
 				last_alloc = current_alloc;
 	}
+	
 	
 	if (prev_alloc && !prev_alloc->used) {
 		prev_alloc->next = current_alloc->next;
