@@ -16,12 +16,13 @@ void* memset(void*, int, size_t);
 size_t strlen(const char*);
 int strcmp(const char *s1, const char *s2);
 int strncmp(const char *s1, const char *s2, size_t n);
-char tolower(char c);
-char toupper(char c);
 char* strchr(const char *s, int c);
 char* strrchr(const char *s, int c);
 char *strcpy(char *dest, const char *src);
+char *strncpy(char *dest, const char *src, size_t n);
 void strcut(char* strfrom, char* strto, int from, int to);
+size_t strcspn(const char *s1, const char *s2);
+char *strstr(const char *s1, const char *s2);
 
 #ifdef __cplusplus
 }

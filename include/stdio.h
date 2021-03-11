@@ -6,6 +6,7 @@
 #include <sys.h>
 #include <tty.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #define EOF (-1)
 
@@ -17,9 +18,14 @@ extern "C" {
 #define false 0
 #define bool _Bool
 
+int _printf_template(bool (*printfn)(const char *, size_t), const char * restrict format, va_list parameters);
 int printf(const char* __restrict, ...);
 int putchar(int);
 int puts(char *str);
+int sprintf(char *s, const char *format, ...);
+int snprintf(char *s, size_t n, const char *format, ...);
+int vsprintf(char *s, const char *format, va_list arg);
+int vsnprintf(char *s, size_t n, const char *format, va_list arg);
 void terminal_clear();
 void terminal_init();
 char getchar();
@@ -67,8 +73,8 @@ typedef struct {
 FILE *fopen(const char* filename, const char* mode);
 uint8_t fread(FILE *file, char *buf, uint64_t start, uint32_t len);
 uint8_t fwrite(FILE *file, char *buf, uint64_t start, uint32_t len);
-FILE *fcreate(char *filename);
-uint8_t fdelete(char *filename);
+FILE *fcreate(const char *filename);
+uint8_t fdelete(const char *filename);
 FILE *readdir(FILE *d, char* buf, uint32_t n);
 int fclose(FILE *fp);
 

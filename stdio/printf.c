@@ -12,7 +12,7 @@ static bool print(const char* data, size_t length) {
 	return true;
 }
 
-int __printf_template(bool (*printfn)(const char *, size_t), const char* restrict format, va_list parameters) {
+int _printf_template(bool (*printfn)(const char *, size_t), const char* restrict format, va_list parameters) {
 	int written = 0;
 
 	while (*format != '\0') {
@@ -316,7 +316,7 @@ int __printf_template(bool (*printfn)(const char *, size_t), const char* restric
 int printf(const char *format, ...) {
 	va_list parameters;
 	va_start(parameters, format);
-	int written = __printf_template(print, format, parameters);
+	int written = _printf_template(print, format, parameters);
 	va_end(parameters);
 	return written;
 }

@@ -27,7 +27,13 @@ static char *expand_fname(const char *filename) {
 FILE null_file = {0};
 
 FILE *fopen (const char* filename, const char* mode) {
-	FILE *fp = calloc(1,sizeof(FILE));
+	FILE *fp;
+	if (mode[0]=='w') {
+		fdelete(filename);
+		fp = fcreate(filename);
+	} else {
+		fp = calloc(1,sizeof(FILE));
+	}
 	if (!fp)
 		return &null_file;
 	char *full_filename = expand_fname(filename);
@@ -54,7 +60,7 @@ uint8_t fwrite (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	return retval;
 }
 
-FILE *fcreate(char *filename) {
+FILE *fcreate(const char *filename) {
 	FILE *fp = calloc(1,sizeof(FILE));
 	if (!fp)
 		return &null_file;
@@ -66,7 +72,7 @@ FILE *fcreate(char *filename) {
 	return fp;
 }
 
-uint8_t fdelete(char *filename) {
+uint8_t fdelete(const char *filename) {
 	char *full_filename = expand_fname(filename);
 	if (!full_filename)
 		return 1;

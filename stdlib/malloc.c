@@ -21,6 +21,9 @@
  * 
  * The calloc function just calls the malloc function and memsets it.
  *
+ * However, one of the major failures of this implementation is its ability for the linked list to be
+ * corrupted by a buffer overflow.
+ *
  * TODO:
  * If the last allocation passes through a 4096 byte boundary and is freed, give the memory back to the kernel.
  *
@@ -61,8 +64,6 @@ void _init_malloc() {
 	root_alloc->next = NULL;
 	root_alloc->prev = NULL;
 }
-
-int printf(const char *format, ...);
 
 void *malloc(size_t size) {
 	alloc_t *current_alloc = root_alloc;
@@ -127,11 +128,25 @@ void *malloc(size_t size) {
 }
 
 void free(void *ptr) {
+	if (ptr < (void *)&_end || ptr > heap_end) {
+		printf("Error: invalid pointer freed: %p\n",ptr);
+		exit(1);
+	}
 	alloc_t *current_alloc = ptr - sizeof(alloc_t);
 	current_alloc->used = false;
 	
 	alloc_t *next_alloc = current_alloc->next;
 	alloc_t *prev_alloc = current_alloc->prev;
+	
+	if (next_alloc && ((void *)next_alloc < (void *)&_end || (void *)next_alloc > heap_end)) {
+		printf("Error: corrupted heap: %p\n",next_alloc);
+		exit(1);
+	}
+	
+	if (prev_alloc && ((void *)prev_alloc < (void *)&_end || (void *)prev_alloc > heap_end)) {
+		printf("Error: corrupted heap: %p\n",prev_alloc);
+		exit(1);
+	}
 
 	if (next_alloc && !next_alloc->used) {
 		current_alloc->next = next_alloc->next;
@@ -153,7 +168,7 @@ void *realloc(void *ptr, size_t size) {
 	alloc_t *current_alloc = ptr - sizeof(alloc_t);
 	if (current_alloc->size >= size) {
 		if ((current_alloc->size - size) >= sizeof(alloc_t)) {
-			alloc_t *new_alloc = current_alloc + sizeof(alloc_t) + size + sizeof(alloc_t);
+			alloc_t *new_alloc = ((void *)current_alloc) + sizeof(alloc_t) + size;
 			new_alloc->used = false;
 			new_alloc->size = (current_alloc->size - size) - sizeof(alloc_t);
 			new_alloc->next = current_alloc->next;
@@ -163,7 +178,6 @@ void *realloc(void *ptr, size_t size) {
 			current_alloc->size = size;
 			current_alloc->next = new_alloc;
 			// prev is same
-			
 			return ptr;
 		}
 		// Not enough space to make new alloc_t structure, return the same memory
@@ -175,7 +189,7 @@ void *realloc(void *ptr, size_t size) {
 		current_alloc->size += reclaim_alloc->size + sizeof(alloc_t);
 		// Treat it as greater or equal
 		if ((current_alloc->size - size) >= sizeof(alloc_t)) {
-			alloc_t *new_alloc = current_alloc + sizeof(alloc_t) + size + sizeof(alloc_t);
+			alloc_t *new_alloc = ((void *)current_alloc) + sizeof(alloc_t) + size;
 			new_alloc->used = false;
 			new_alloc->size = (current_alloc->size - size) - sizeof(alloc_t);
 			new_alloc->next = current_alloc->next;
@@ -185,7 +199,6 @@ void *realloc(void *ptr, size_t size) {
 			current_alloc->size = size;
 			current_alloc->next = new_alloc;
 			// prev is same
-			
 			return ptr;
 		}
 		// Not enough space to make new alloc_t structure, return the same memory
@@ -194,7 +207,10 @@ void *realloc(void *ptr, size_t size) {
 	
 	// We cannot fit it in any existing allocations.
 	void *alloced_mem = malloc(size);
+	if (!alloced_mem)
+		return NULL;
 	memcpy(alloced_mem, ptr, current_alloc->size);
+	free(ptr);
 	return alloced_mem;
 }
 

@@ -8,7 +8,7 @@ endif
 CC=$(TARGETPREFIX)gcc
 AR=$(TARGETPREFIX)ar
 NASM=nasm
-CLFAGS?=-Iinclude -nostdlib -fno-builtin
+CLFAGS?=-Iinclude -nostdlib -fno-builtin -g
 PREFIX?=./sysroot
 
 COBJS=\
@@ -20,6 +20,7 @@ io/tty.o \
 stdio/printf.o \
 stdio/putchar.o \
 stdio/puts.o \
+stdio/sprintf.o \
 string/memcmp.o \
 string/memset.o \
 string/memcpy.o \
@@ -28,13 +29,24 @@ string/strchr.o \
 string/strcmp.o \
 string/strncmp.o \
 string/strcpy.o \
+string/strncpy.o \
 string/strcut.o \
 string/strlen.o \
 string/strrchr.o \
-string/tolower.o \
-string/toupper.o \
+string/strcspn.o \
+string/strstr.o \
 sys/sys.o \
 stdlib/malloc.o \
+stdlib/strto.o \
+stdlib/atoi.o \
+ctype/isdigit.o \
+ctype/islower.o \
+ctype/isspace.o \
+ctype/isupper.o \
+ctype/isalpha.o \
+ctype/tolower.o \
+ctype/toupper.o \
+ctype/isxdigit.o \
 
 AOBJS=\
 crt0.o \
