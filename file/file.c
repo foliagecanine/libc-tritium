@@ -26,11 +26,11 @@ static char *expand_fname(const char *filename) {
 
 FILE null_file = {0};
 
-FILE *fopen (const char* filename, const char* mode) {
+FILE *openfile (const char* filename, const char* mode) {
 	FILE *fp;
 	if (mode[0]=='w') {
-		fdelete(filename);
-		fp = fcreate(filename);
+		deletefile(filename);
+		fp = createfile(filename);
 	} else {
 		fp = calloc(1,sizeof(FILE));
 	}
@@ -44,7 +44,7 @@ FILE *fopen (const char* filename, const char* mode) {
 	return fp;
 }
 
-uint8_t fread (FILE *t, char *buf, uint64_t start, uint32_t len) {
+uint8_t readfile (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	uint8_t retval;
 	uint32_t starth = start>>32;
 	uint32_t startl = start&0xFFFFFFFF;
@@ -52,7 +52,7 @@ uint8_t fread (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	return retval;
 }
 
-uint8_t fwrite (FILE *t, char *buf, uint64_t start, uint32_t len) {
+uint8_t writefile (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	uint8_t retval;
 	uint32_t starth = start>>32;
 	uint32_t startl = start&0xFFFFFFFF;
@@ -60,7 +60,7 @@ uint8_t fwrite (FILE *t, char *buf, uint64_t start, uint32_t len) {
 	return retval;
 }
 
-FILE *fcreate(const char *filename) {
+FILE *createfile(const char *filename) {
 	FILE *fp = calloc(1,sizeof(FILE));
 	if (!fp)
 		return &null_file;
@@ -72,7 +72,7 @@ FILE *fcreate(const char *filename) {
 	return fp;
 }
 
-uint8_t fdelete(const char *filename) {
+uint8_t deletefile(const char *filename) {
 	char *full_filename = expand_fname(filename);
 	if (!full_filename)
 		return 1;
@@ -81,7 +81,7 @@ uint8_t fdelete(const char *filename) {
 	return retval;
 }
 
-FILE *readdir(FILE *d, char* buf, uint32_t n) {
+FILE *finddir(FILE *d, char* buf, uint32_t n) {
 	FILE *fp = calloc(1,sizeof(FILE));
 	if (!fp)
 		return &null_file;
@@ -89,7 +89,7 @@ FILE *readdir(FILE *d, char* buf, uint32_t n) {
 	return fp;
 }
 
-int fclose(FILE *fp) {
+int closefile(FILE *fp) {
 	if (!fp)
 		return 1;
 	free(fp);

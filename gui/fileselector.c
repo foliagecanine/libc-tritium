@@ -104,12 +104,12 @@ void __fselect_update() {
 	__fselect_selected = 0;
 	FILE *currdir;
 	char buf[31];
-	currdir = fopen(__fselect_cd,"r");
+	currdir = openfile(__fselect_cd,"r");
 	memset(__fselect_name,0,sizeof(char)*16*31);
 	FILE *r = currdir;
 	for (uint8_t i = 0; i < 16; i++) {
 		memset(buf,0,31);
-		r = readdir(currdir,buf,i);
+		r = finddir(currdir,buf,i);
 		if (r->valid&&buf[0]) {
 			memset(__fselect_name[__fselect_count],' ',30);
 			memcpy(__fselect_name[__fselect_count],buf,strlen(buf));
@@ -209,7 +209,7 @@ char *__fselect_select(bool newfile) {
 			__fselect_numdisks = 0;
 			for (uint8_t i = 0; i < 8; i++) {
 				testdisk[0] = 65+i;
-				FILE *fp = fopen(testdisk,"r");
+				FILE *fp = openfile(testdisk,"r");
 				if (fp->valid) {
 					__fselect_disks[__fselect_numdisks] = i;
 					__fselect_numdisks++;
@@ -228,7 +228,7 @@ char *__fselect_select(bool newfile) {
 			char *r = __fselect_newfile();
 			terminal_clearcursor();
 			if (r) {
-				fcreate(r);
+				createfile(r);
 			}
 			return r;
 		}

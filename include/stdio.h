@@ -70,13 +70,13 @@ typedef struct {
 	_Bool directory;
 } FILE, *PFILE;
 
-FILE *fopen(const char* filename, const char* mode);
-uint8_t fread(FILE *file, char *buf, uint64_t start, uint32_t len);
-uint8_t fwrite(FILE *file, char *buf, uint64_t start, uint32_t len);
-FILE *fcreate(const char *filename);
-uint8_t fdelete(const char *filename);
-FILE *readdir(FILE *d, char* buf, uint32_t n);
-int fclose(FILE *fp);
+FILE *openfile(const char* filename, const char* mode);
+uint8_t readfile(FILE *file, char *buf, uint64_t start, uint32_t len);
+uint8_t writefile(FILE *file, char *buf, uint64_t start, uint32_t len);
+FILE *createfile(const char *filename);
+uint8_t deletefile(const char *filename);
+FILE *finddir(FILE *d, char* buf, uint32_t n);
+int closefile(FILE *fp);
 
 #ifdef __cplusplus
 }
