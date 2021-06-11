@@ -50,3 +50,15 @@ int vsnprintf(char *s, size_t n, const char *format, va_list arg) {
 	return written;
 }
 
+int vsscanf(const char *s, const char *format, va_list parameters) {
+	//Sad :(
+	return 0;
+}
+
+int sscanf(const char *s, const char *format, ...) {
+	va_list args;
+	va_start(args, format);
+	int retval = vsscanf(s,format,args);
+	va_end(args);
+	return retval;
+}

@@ -81,6 +81,17 @@ uint8_t deletefile(const char *filename) {
 	return retval;
 }
 
+bool existfile(const char *filename) {
+	FILE f;
+	if (!filename)
+		return false;
+	char *full_filename = expand_fname(filename);
+	if (!full_filename)
+		return false;
+	_syscall3(12,(uintptr_t)&f,(uintptr_t)full_filename,(uintptr_t)"r");
+	free(full_filename);
+}
+
 FILE *finddir(FILE *d, char* buf, uint32_t n) {
 	FILE *fp = calloc(1,sizeof(FILE));
 	if (!fp)

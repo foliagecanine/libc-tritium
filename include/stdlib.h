@@ -10,7 +10,9 @@
 #include <ctype.h>
 #include <sys.h>
 
-void _init_malloc();
+#define assert(e) ((e) ? (void)0 : _assert(#e,__FILE__, __LINE__))
+
+void _init_malloc(void);
 void *malloc(size_t size);
 void free(void *ptr);
 void *realloc(void *ptr, size_t size);
@@ -22,7 +24,13 @@ unsigned long long int strtoull (const char *str, char **endptr, int base);
 long long int strtoll (const char *str, char **endptr, int base);
 int atoi (const char *str);
 
-char *getenv(char *name);
+char *getenv(const char *name);
 void exit(uint32_t code);
+void abort(void);
+void _assert(const char *expr, const char *file, const char *line);
+
+int abs(int i);
+
+void qsort(void * base, size_t nmemb, size_t size, int (*compar)(const void *, const void *));
 
 #endif

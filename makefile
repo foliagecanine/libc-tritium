@@ -13,10 +13,12 @@ PREFIX?=./sysroot
 
 COBJS=\
 file/file.o \
+file/unixfile.o \
 gui/drawrect.o \
 gui/fileselector.o \
 io/getchar.o \
 io/tty.o \
+io/errno.o \
 stdio/printf.o \
 stdio/putchar.o \
 stdio/puts.o \
@@ -25,6 +27,7 @@ string/memcmp.o \
 string/memset.o \
 string/memcpy.o \
 string/memmove.o \
+string/memchr.o \
 string/strchr.o \
 string/strcmp.o \
 string/strncmp.o \
@@ -34,12 +37,19 @@ string/strcut.o \
 string/strlen.o \
 string/strrchr.o \
 string/strcspn.o \
+string/strspn.o \
+string/strpbrk.o \
 string/strstr.o \
+string/strcat.o \
 sys/sys.o \
 stdlib/malloc.o \
 stdlib/strto.o \
 stdlib/atoi.o \
+stdlib/math.o \
+stdlib/qsort.o \
+stdlib/abort.o \
 ctype/isdigit.o \
+ctype/ispunct.o \
 ctype/islower.o \
 ctype/isspace.o \
 ctype/isupper.o \
@@ -47,6 +57,7 @@ ctype/isalpha.o \
 ctype/tolower.o \
 ctype/toupper.o \
 ctype/isxdigit.o \
+ctype/isalnum.o \
 
 AOBJS=\
 crt0.o \

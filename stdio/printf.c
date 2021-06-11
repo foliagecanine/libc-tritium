@@ -216,7 +216,7 @@ int _printf_template(bool (*printfn)(const char *, size_t), const char* restrict
 					return -1;
 				written+=size;
 			}
-		} else if (*format == 'd') {
+		} else if (*format == 'd' || *format == 'i') {
 			if (!format_specified)
 				vararg = (long long)(int)va_arg(parameters, int);
 			

@@ -8,7 +8,13 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#define EOF (-1)
+#define EOF 			(-1)
+#define FOPEN_MAX 		255
+#define FILENAME_MAX 	12
+
+#define _FILE_FLAGS_ERR (1<<0)
+#define _FILE_FLAGS_EOF (1<<1)
+#define _FILE_FLAGS_TMP (1<<2)
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,6 +32,8 @@ int sprintf(char *s, const char *format, ...);
 int snprintf(char *s, size_t n, const char *format, ...);
 int vsprintf(char *s, const char *format, va_list arg);
 int vsnprintf(char *s, size_t n, const char *format, va_list arg);
+int vsscanf(const char *s, const char *format, va_list parameters);
+int sscanf(const char *s, const char *format, ...);
 void terminal_clear();
 void terminal_init();
 char getchar();
@@ -65,9 +73,11 @@ typedef struct {
 	uint8_t mountNumber;
 	uint32_t clusterNumber; //For FAT based systems
 	uint64_t dir_entry;
-	_Bool writelock;
+	uint8_t flags;
+	int32_t desc;
 	_Bool valid;
 	_Bool directory;
+	_Bool writelock;
 } FILE, *PFILE;
 
 FILE *openfile(const char* filename, const char* mode);
@@ -75,6 +85,7 @@ uint8_t readfile(FILE *file, char *buf, uint64_t start, uint32_t len);
 uint8_t writefile(FILE *file, char *buf, uint64_t start, uint32_t len);
 FILE *createfile(const char *filename);
 uint8_t deletefile(const char *filename);
+bool existfile(const char* filename);
 FILE *finddir(FILE *d, char* buf, uint32_t n);
 int closefile(FILE *fp);
 
