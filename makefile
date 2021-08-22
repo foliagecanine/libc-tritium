@@ -19,6 +19,7 @@ gui/fileselector.o \
 io/getchar.o \
 io/tty.o \
 io/errno.o \
+io/ipc.o \
 stdio/printf.o \
 stdio/putchar.o \
 stdio/puts.o \
