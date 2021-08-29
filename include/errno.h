@@ -8,7 +8,7 @@ extern int errno;
 
 void _set_errno(int e);
 void perror(const char *s);
-char *strerror(int e);
+const char *strerror(int e);
 
 #define EPERM 		1
 #define ENOENT 		2

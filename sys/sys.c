@@ -89,3 +89,11 @@ uint32_t fork() {
 void *map_mem(void *address) {
 	return (void *)(uintptr_t)_syscall1(26,(uint32_t)(uintptr_t)address);
 }
+
+uint64_t get_ticks() {
+	uint64_t low;
+	uint64_t high;
+	low = _syscall1(24, false);
+	high = _syscall1(24, true);
+	return (high << 32) | low;
+}

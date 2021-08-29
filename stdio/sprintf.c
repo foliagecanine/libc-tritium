@@ -23,6 +23,7 @@ int sprintf(char *s, const char *format, ...) {
 	va_start(parameters, format);
 	out = s;
 	int written = _printf_template(sprint, format, parameters);
+	s[written] = 0;
 	va_end(parameters);
 	return written;
 }
