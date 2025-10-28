@@ -1,0 +1,21 @@
+#ifndef __CCTYPE__
+#define __CCTYPE__
+
+#include <ctype.h>
+
+namespace std {
+    using ::isdigit;
+    using ::isalpha;
+    using ::isalnum;
+    using ::isupper;
+    using ::islower;
+    using ::isspace;
+    using ::isxdigit;
+    using ::ispunct;
+    using ::iscntrl;
+    using ::isprint;
+    using ::toupper;
+    using ::tolower;
+} // namespace std
+
+#endif

@@ -1,0 +1,24 @@
+#ifndef __CTTY__
+#define __CTTY__
+
+#include <tty.h>
+
+namespace std {
+    using ::vga_color;
+    using ::terminal_clear;
+    using ::terminal_putchar;
+    using ::terminal_writestring;
+    using ::terminal_write;
+    using ::terminal_backup;
+    using ::terminal_setcolor;
+    using ::terminal_getcolor;
+    using ::terminal_goto;
+    using ::terminal_putentryat;
+    using ::terminal_getcolumn;
+    using ::terminal_getrow;
+    using ::terminal_setcursor;
+    using ::terminal_clearcursor;
+    using ::terminal_enablecursor;
+} // namespace std
+
+#endif

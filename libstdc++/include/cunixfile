@@ -1,0 +1,40 @@
+#ifndef __CUNIXFILE__
+#define __CUNIXFILE__
+
+#include <unixfile.h>
+
+namespace std {
+    using ::stdin;
+    using ::stdout;
+    using ::stderr;
+    using ::open;
+    using ::close;
+    using ::creat;
+    using ::read;
+    using ::write;
+    using ::lseek;
+    using ::remove;
+    using ::ferror;
+    using ::feof;
+    using ::fopen;
+    using ::freopen;
+    using ::fclose;
+    using ::fflush;
+    using ::ftell;
+    using ::fseek;
+    using ::rewind;
+    using ::fputc;
+    using ::fputs;
+    using ::fgetc;
+    using ::fgets;
+    using ::ungetc;
+    using ::fread;
+    using ::fwrite;
+    using ::vfprintf;
+    using ::fprintf;
+    using ::fileno;
+    using ::setvbuf;
+    using ::tmpfile;
+} // namespace std
+
+#endif
