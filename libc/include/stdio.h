@@ -17,8 +17,6 @@
 #define _FILE_FLAGS_TMP (1 << 2)
 
 #ifdef __cplusplus
-//TEMPORextern "C" {
-//TEMPOR#else
 #include <stdbool.h>
 #endif
 
@@ -195,8 +193,5 @@
     FILE *  finddir(FILE *d, char *buf, uint32_t n);
     int     closefile(FILE *fp);
 
-//TEMPOR#ifdef __cplusplus
-//TEMPOR}
-//TEMPOR#endif
 
 #endif

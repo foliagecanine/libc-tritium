@@ -5,9 +5,6 @@
 #include <string.h>
 #include <sys.h>
 
-//TEMPOR#ifdef __cplusplus
-//TEMPORextern "C" {
-//TEMPOR#endif
 
 /*
  * Blockwise malloc implementation using a buddy allocator.
@@ -156,7 +153,3 @@ void *calloc(size_t num, size_t size)
     memset(ptr, 0, num * size);
     return ptr;
 }
-
-//TEMPOR#ifdef __cplusplus
-//TEMPOR}
-//TEMPOR#endif

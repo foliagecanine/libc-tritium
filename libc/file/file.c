@@ -5,9 +5,6 @@
 #include <stdbool.h>
 #include <sys.h>
 
-//TEMPOR#ifdef __cplusplus
-//TEMPORextern "C" {
-//TEMPOR#endif
 
 static char *expand_fname(const char *filename) {
 	char *retval;
@@ -133,6 +130,3 @@ int closefile(FILE *fp) {
 	return 0;
 }
 
-//TEMPOR#ifdef __cplusplus
-//TEMPOR}
-//TEMPOR#endif
