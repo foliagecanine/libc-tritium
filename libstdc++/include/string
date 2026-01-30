@@ -184,7 +184,16 @@ namespace std {
         size_t copy(char* s, size_t len, size_t pos = 0) const;
         
         /**
-         * Find content in string
+         * Find the first occurance of c in string
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find(char c, size_t pos = 0) const;
+        
+        /**
+         * Find the first occurance of str in string
          * 
          * @param str String to search for
          * @param pos Position to start search from
@@ -193,7 +202,16 @@ namespace std {
         size_t find(const string& str, size_t pos = 0) const;
         
         /**
-         * Find last occurrence of content in string
+         * Find last occurrence of c in string
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t rfind(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find last occurrence of str in string
          * 
          * @param str String to search for
          * @param pos Position to start search from (backwards)
@@ -211,31 +229,67 @@ namespace std {
         size_t find_first_of(char c, size_t pos = 0) const;
         
         /**
-         * Find character in string from the end
+         * Find character in string
+         * 
+         * @param str Characters to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find_first_of(const string& str, size_t pos = 0) const;
+        
+        /**
+         * Find c in string from the end
          * 
          * @param c Character to search for
          * @param pos Position to start search from (backwards)
          * @return Position of last occurrence or npos
          */
         size_t find_last_of(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find str in string from the end
+         * 
+         * @param str String to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t find_last_of(const string& str, size_t pos = string::npos) const;
         
         /**
-         * Find absence of character in string
+         * Find first character in string that is not c
          * 
          * @param c Character to search for absence
          * @param pos Position to start search from
          * @return Position of first non-matching character or npos
          */
         size_t find_first_not_of(char c, size_t pos = 0) const;
+
+        /**
+         * Find first character in string that is not in str
+         * 
+         * @param str Characters to search for absence
+         * @param pos Position to start search from
+         * @return Position of first non-matching character or npos
+         */
+        size_t find_first_not_of(const string& str, size_t pos = 0) const;
         
         /**
-         * Find absence of character in string from the end
+         * Find last character in string that is not c
          * 
          * @param c Character to search for absence
          * @param pos Position to start search from (backwards)
          * @return Position of last non-matching character or npos
          */
         size_t find_last_not_of(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find last character in string that is not in str
+         * 
+         * @param str Characters to search for absence
+         * @param pos Position to start search from (backwards)
+         * @return Position of last non-matching character or npos
+         */
+        size_t find_last_not_of(const string& str, size_t pos = string::npos) const;
         
         /**
          * Generate substring

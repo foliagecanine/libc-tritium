@@ -63,12 +63,15 @@ FILE *stdin  = &_stdin;
 FILE *stdout = &_stdout;
 FILE *stderr = &_stderr;
 
-bool      _unixfile_initialized = false;
-unixfile *_filedesc;
+static bool      _unixfile_initialized = false;
 
-void _init_unixfile()
+static unixfile _filedescst[FOPEN_MAX];
+
+static unixfile *_filedesc = &_filedescst[0];
+
+static void _init_unixfile()
 {
-    _filedesc = (unixfile *)calloc(FOPEN_MAX, sizeof(unixfile));
+    // _filedesc = (unixfile *)calloc(FOPEN_MAX, sizeof(unixfile));
     if (!_filedesc) exit(139);
     _filedesc[0].file     = stdin;
     _filedesc[0].flags    = STDIO_FLAG_STDIN | STDIO_FLAG_READ;
@@ -79,7 +82,7 @@ void _init_unixfile()
     _unixfile_initialized = true;
 }
 
-void _check_unixfile()
+static void _check_unixfile()
 {
     if (_unixfile_initialized)
         return;
@@ -89,6 +92,7 @@ void _check_unixfile()
 
 int _get_avail_desc()
 {
+    _check_unixfile();
     for (int i = 1; i < FOPEN_MAX; i++)
     {
         if (!(_filedesc[i].flags & STDIO_FLAG_USED)) return i;
@@ -348,7 +352,7 @@ int remove(const char *filename)
     return 0;
 }
 
-void _set_fileerr(FILE *fp, int e)
+static void _set_fileerr(FILE *fp, int e)
 {
     _set_errno(e);
     fp->flags |= _FILE_FLAGS_ERR;

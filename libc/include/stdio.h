@@ -190,6 +190,7 @@
     uint8_t writefile(FILE *file, char *buf, uint64_t start, uint32_t len);
     FILE *  createfile(const char *filename);
     uint8_t deletefile(const char *filename);
+    uint8_t movefile(const char *source, const char *dest);
     bool    existfile(const char *filename);
     FILE *  finddir(FILE *d, char *buf, uint32_t n);
     int     closefile(FILE *fp);

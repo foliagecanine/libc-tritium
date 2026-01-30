@@ -93,7 +93,7 @@ uint32_t fork() {
 }
 
 void *map_mem(void *address) {
-	return (void *)(uintptr_t)_syscall1(SYSCALL_MAP_MEM,(uint32_t)(uintptr_t)address);
+	return (void *)(uintptr_t)_syscall1(SYSCALL_MAP_MEM, (uint32_t)(uintptr_t)address);
 }
 
 uint64_t get_ticks() {

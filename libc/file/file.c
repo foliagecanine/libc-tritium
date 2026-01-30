@@ -89,6 +89,23 @@ uint8_t deletefile(const char *filename) {
 	return retval;
 }
 
+uint8_t movefile(const char *source, const char *dest) {
+	char *full_source = expand_fname(source);
+	if (!full_source)
+		return 1;
+	
+	char *full_dest = expand_fname(dest);
+	if (!full_dest) {
+		free(full_source);
+		return 1;
+	}
+
+	uint8_t retval = (uint8_t)_syscall2(17, (uintptr_t)full_source, (uintptr_t)full_dest);
+	free(full_source);
+	free(full_dest);
+	return retval;
+}
+
 bool existfile(const char *filename) {
 	FILE f;
 	if (!filename)

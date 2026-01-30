@@ -288,6 +288,18 @@ namespace std {
         return to_copy;
     }
 
+    size_t string::find(char c, size_t pos) const {
+        if (pos >= m_size) {
+            return npos;
+        }
+        for (size_t i = pos; i < m_size; ++i) {
+            if (m_data[i] == c) {
+                return i;
+            }
+        }
+        return npos;
+    }
+
     size_t string::find(const string& str, size_t pos) const {
         if (pos >= m_size || str.m_size == 0) {
             return npos;
@@ -295,6 +307,21 @@ namespace std {
         const char* found = strstr(m_data + pos, str.m_data);
         if (found) {
             return found - m_data;
+        }
+        return npos;
+    }
+
+    size_t string::rfind(char c, size_t pos) const {
+        if (m_size == 0) {
+            return npos;
+        }
+        if (pos >= m_size) {
+            pos = m_size - 1;
+        }
+        for (size_t i = pos; i != (size_t)-1; --i) {
+            if (m_data[i] == c) {
+                return i;
+            }
         }
         return npos;
     }
@@ -315,27 +342,39 @@ namespace std {
     }
 
     size_t string::find_first_of(char c, size_t pos) const {
-        if (pos >= m_size) {
+        return find(c, pos);
+    }
+
+    size_t string::find_first_of(const string& str, size_t pos) const {
+        if (pos >= m_size || str.m_size == 0) {
             return npos;
         }
         for (size_t i = pos; i < m_size; ++i) {
-            if (m_data[i] == c) {
-                return i;
+            for (size_t j = 0; j < str.m_size; ++j) {
+                if (m_data[i] == str.m_data[j]) {
+                    return i;
+                }
             }
         }
         return npos;
     }
 
     size_t string::find_last_of(char c, size_t pos) const {
-        if (m_size == 0) {
+        return rfind(string(1, c), pos);
+    }
+
+    size_t string::find_last_of(const string& str, size_t pos) const {
+        if (m_size == 0 || str.m_size == 0) {
             return npos;
         }
         if (pos >= m_size) {
             pos = m_size - 1;
         }
         for (size_t i = pos; i != (size_t)-1; --i) {
-            if (m_data[i] == c) {
-                return i;
+            for (size_t j = 0; j < str.m_size; ++j) {
+                if (m_data[i] == str.m_data[j]) {
+                    return i;
+                }
             }
         }
         return npos;
@@ -353,6 +392,25 @@ namespace std {
         return npos;
     }
 
+    size_t string::find_first_not_of(const string& str, size_t pos) const {
+        if (pos >= m_size || str.m_size == 0) {
+            return npos;
+        }
+        for (size_t i = pos; i < m_size; ++i) {
+            bool found = false;
+            for (size_t j = 0; j < str.m_size; ++j) {
+                if (m_data[i] == str.m_data[j]) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return i;
+            }
+        }
+        return npos;
+    }
+
     size_t string::find_last_not_of(char c, size_t pos) const {
         if (m_size == 0) {
             return npos;
@@ -362,6 +420,28 @@ namespace std {
         }
         for (size_t i = pos; i != (size_t)-1; --i) {
             if (m_data[i] != c) {
+                return i;
+            }
+        }
+        return npos;
+    }
+
+    size_t string::find_last_not_of(const string& str, size_t pos) const {
+        if (m_size == 0 || str.m_size == 0) {
+            return npos;
+        }
+        if (pos >= m_size) {
+            pos = m_size - 1;
+        }
+        for (size_t i = pos; i != (size_t)-1; --i) {
+            bool found = false;
+            for (size_t j = 0; j < str.m_size; ++j) {
+                if (m_data[i] == str.m_data[j]) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 return i;
             }
         }
