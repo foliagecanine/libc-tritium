@@ -1,0 +1,11 @@
+#ifndef __CGUI__
+#define __CGUI__
+
+#include <gui.h>
+
+namespace std {
+    using ::drawrect;
+    using ::fileselector;
+} // namespace std
+
+#endif

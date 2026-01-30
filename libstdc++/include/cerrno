@@ -1,0 +1,13 @@
+#ifndef __CERRNO__
+#define __CERRNO__
+
+#include <errno.h>
+
+namespace std {
+    using ::errno;
+    using ::_set_errno;
+    using ::perror;
+    using ::strerror;
+} // namespace std
+
+#endif

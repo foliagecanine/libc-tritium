@@ -1,0 +1,446 @@
+#ifndef __STRING__
+#define __STRING__
+
+#include <cstddef>
+#include <algorithm>
+
+namespace std {
+
+    class string {
+    public:
+        /**
+         * Default constructor
+         */
+        string();
+
+        /**
+         * Constructor from C-style string
+         * 
+         * @param str The C-style string to initialize from
+         */
+        string(const char *str);
+
+        /**
+         * Copy constructor
+         * 
+         * @param other The string to copy from
+         */
+        string(const string& other);
+
+        /**
+         * Fill constructor
+         * 
+         * @param n Number of characters to fill
+         * @param c Character to fill with
+         */
+        string(size_t n, char c);
+
+        /**
+         * Destructor
+         */
+        ~string();
+
+        /**
+         * Assignment operator
+         * 
+         * @param other The string to assign from
+         * @return A reference to this string after assignment
+         */
+        string& operator=(const string& other);
+
+        /**
+         * Operator to access character at specified index
+         */
+        char& operator[](size_t index);
+
+        /**
+         * Const operator to access character at specified index
+         */
+        const char& operator[](size_t index) const;
+
+        /**
+         * Access character at specified index with bounds checking
+         * 
+         * @param pos The index of the character to access
+         * @return A reference to the character at the specified index
+         */
+        char& at(size_t pos);
+
+        /**
+         * Access character at specified index with bounds checking
+         * 
+         * @param pos The index of the character to access
+         * @return A const reference to the character at the specified index
+         */
+        const char& at(size_t pos) const;
+
+        /**
+         * Get the current capacity of the string
+         * 
+         * @return The current capacity of the string
+         */
+        size_t capacity() const;
+
+        /**
+         * Return maximum size of string
+         * 
+         * @return The maximum size the string can reach
+         */
+        size_t max_size() const;
+        
+        /**
+         * Get the first character of the string
+         * 
+         * @return The first character of the string
+         */
+        char& front();
+
+        /**
+         * Get the first character of the string
+         * 
+         * @return The first character of the string
+         */
+        const char& front() const;
+
+        /**
+         * Get the last character of the string
+         * 
+         * @return The last character of the string
+         */
+        char& back();
+
+        /**
+         * Get the last character of the string
+         * 
+         * @return The last character of the string
+         */
+        const char& back() const;
+
+        /**
+         * Insert another string into this string at the specified index
+         * 
+         * @param index The index at which to insert the other string
+         * @param other The string to insert
+         */
+        void insert(size_t index, const string& other);
+
+        /**
+         * Erase a portion of the string
+         * 
+         * @param index The starting index to erase
+         * @param count The number of characters to erase
+         */
+        void erase(size_t index, size_t count);
+
+        /**
+         * Replace a portion of the string with another string
+         * 
+         * @param index The starting index to replace
+         * @param count The number of characters to replace
+         * @param other The string to insert in place of the replaced portion
+         */
+        void replace(size_t index, size_t count, const string& other);
+
+        /**
+         * Compare this string with another string
+         * 
+         * @param other The string to compare with
+         * @return An integer less than, equal to, or greater than zero if this string is found,
+         *         respectively, to be less than, to match, or be greater than the other string
+         */
+        int compare(const string& other) const;
+
+        /**
+         * Append another string to this string
+         * 
+         * @param other The string to append
+         */
+        void append(const string& other);
+
+        /**
+         * Append another string to this string
+         * 
+         * @param other The string to append
+         * @return A reference to this string after appending
+         */
+        string& operator+=(const string& other);
+        
+        /**
+         * Assign content to string
+         * 
+         * @param str String to assign
+         * @return Reference to this string
+         */
+        string& assign(const string& str);
+        
+        /**
+         * Copy sequence of characters from string
+         * 
+         * @param s Pointer to array where to copy
+         * @param len Number of characters to copy
+         * @param pos Position to start copying from
+         * @return Number of characters copied
+         */
+        size_t copy(char* s, size_t len, size_t pos = 0) const;
+        
+        /**
+         * Find the first occurance of c in string
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find(char c, size_t pos = 0) const;
+        
+        /**
+         * Find the first occurance of str in string
+         * 
+         * @param str String to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find(const string& str, size_t pos = 0) const;
+        
+        /**
+         * Find last occurrence of c in string
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t rfind(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find last occurrence of str in string
+         * 
+         * @param str String to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t rfind(const string& str, size_t pos = string::npos) const;
+        
+        /**
+         * Find character in string
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find_first_of(char c, size_t pos = 0) const;
+        
+        /**
+         * Find character in string
+         * 
+         * @param str Characters to search for
+         * @param pos Position to start search from
+         * @return Position of first occurrence or npos
+         */
+        size_t find_first_of(const string& str, size_t pos = 0) const;
+        
+        /**
+         * Find c in string from the end
+         * 
+         * @param c Character to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t find_last_of(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find str in string from the end
+         * 
+         * @param str String to search for
+         * @param pos Position to start search from (backwards)
+         * @return Position of last occurrence or npos
+         */
+        size_t find_last_of(const string& str, size_t pos = string::npos) const;
+        
+        /**
+         * Find first character in string that is not c
+         * 
+         * @param c Character to search for absence
+         * @param pos Position to start search from
+         * @return Position of first non-matching character or npos
+         */
+        size_t find_first_not_of(char c, size_t pos = 0) const;
+
+        /**
+         * Find first character in string that is not in str
+         * 
+         * @param str Characters to search for absence
+         * @param pos Position to start search from
+         * @return Position of first non-matching character or npos
+         */
+        size_t find_first_not_of(const string& str, size_t pos = 0) const;
+        
+        /**
+         * Find last character in string that is not c
+         * 
+         * @param c Character to search for absence
+         * @param pos Position to start search from (backwards)
+         * @return Position of last non-matching character or npos
+         */
+        size_t find_last_not_of(char c, size_t pos = string::npos) const;
+
+        /**
+         * Find last character in string that is not in str
+         * 
+         * @param str Characters to search for absence
+         * @param pos Position to start search from (backwards)
+         * @return Position of last non-matching character or npos
+         */
+        size_t find_last_not_of(const string& str, size_t pos = string::npos) const;
+        
+        /**
+         * Generate substring
+         * 
+         * @param pos Position to start from
+         * @param len Length of substring
+         * @return Substring
+         */
+        string substr(size_t pos = 0, size_t len = string::npos) const;
+
+        /**
+         * Member function to swap contents with another string
+         * 
+         * @param other The other string to swap with
+         */
+        void swap(string& other);
+
+        /**
+         * Append a character to the end of the string
+         * 
+         * @param c The character to append
+         */
+        void push_back(char c);
+
+        /**
+         * Remove the last character from the string
+         */
+        void pop_back();
+
+        /**
+         * Clear the string content
+         */
+        void clear();
+
+        /**
+         * Reserve capacity for the string
+         * 
+         * @param new_capacity The new capacity to reserve
+         */
+        void reserve(size_t new_capacity);
+        
+        /**
+         * Resize string
+         * 
+         * @param n New string length
+         * @param c Character to fill with if n > current size
+         */
+        void resize(size_t n, char c = '\0');
+        
+        /**
+         * Get the current length of the string
+         * 
+         * @return The current length of the string
+         */
+        size_t length() const;
+
+        /**
+         * Get the current size of the string
+         * 
+         * @return The current size of the string
+         */
+        size_t size() const;
+
+        /**
+         * Check if the string is empty
+         * 
+         * @return true if the string is empty, false otherwise
+         */
+        bool empty() const;
+
+        /**
+         * Shrink the capacity to fit the current size
+         */
+        void shrink_to_fit();
+
+        /**
+         * Get the allocator used by the string
+         * 
+         * @return Pointer to the allocator
+         */
+        void *get_allocator() const;
+
+        /**
+         * Get C-style string (null-terminated)
+         * 
+         * @return Pointer to the C-style string
+         */
+        const char *c_str() const;
+        
+        /**
+         * Get string data
+         * 
+         * @return Pointer to the underlying array
+         */
+        const char* data() const;
+        
+        /**
+         * Maximum value for size_t
+         */
+        static const size_t npos = -1;
+
+        /**
+         * Concatenate two strings
+         * 
+         * @param rhs The right-hand side string
+         * @return A new string that is the concatenation of lhs and rhs
+         */
+        friend string operator+(const string& lhs, const string& rhs) {
+            string result(lhs);
+            result.append(rhs);
+            return result;
+        }
+        
+        /**
+         * Equal operator for strings
+         * 
+         * @param rhs The right-hand side string
+         * @return true if lhs is equal to rhs, false otherwise
+         */
+        friend bool operator==(const string& lhs, const string& rhs) {
+            return lhs.compare(rhs) == 0;
+        }
+        
+        /**
+         * Not equal operator for strings
+         * 
+         * @param rhs The right-hand side string
+         * @return true if lhs is not equal to rhs, false otherwise
+         */
+        friend bool operator!=(const string& lhs, const string& rhs) {
+            return lhs.compare(rhs) != 0;
+        }
+
+        /**
+         * Non-member function to swap two strings
+         * 
+         * @param lhs The first string
+         * @param rhs The second string
+         */
+        friend void swap(string& lhs, string& rhs) {
+            std::swap(lhs.m_data, rhs.m_data);
+            std::swap(lhs.m_size, rhs.m_size);
+            std::swap(lhs.m_capacity, rhs.m_capacity);
+        }
+        
+    private:
+        char *m_data;
+        size_t m_size;
+        size_t m_capacity;
+    };
+
+} // namespace std
+
+#endif
