@@ -23,7 +23,8 @@ struct alloc_t
 };
 
 #define MIN_BLOCK_SIZE 16
-#define MAX_ORDER 8
+#define MAX_ORDER 27
+#define PAGE_ORDER 8
 
 extern int _end;
 
@@ -31,10 +32,33 @@ void *   heap_end;
 void *   heap_start;
 alloc_t *free_lists[MAX_ORDER + 1];
 
-static bool grow_heap()
+static bool grow_heap(int order)
 {
-    if (!map_mem(heap_end)) return false;
-    heap_end += 4096;
+    if (order < PAGE_ORDER) order = PAGE_ORDER;
+    size_t block_size = (size_t)MIN_BLOCK_SIZE << order;
+
+    // Fill alignment gap with page-sized blocks to avoid unmapped holes
+    while ((uintptr_t)heap_end & (block_size - 1)) {
+        if (!map_mem(heap_end)) return false;
+        alloc_t *gap_block = (alloc_t *)heap_end;
+        gap_block->order = PAGE_ORDER;
+        gap_block->used = true;
+        heap_end = (void *)((uintptr_t)heap_end + 4096);
+        free(gap_block->data);
+    }
+
+    // Now heap_end is aligned to block_size. Map the requested block.
+    for (uintptr_t i = 0; i < block_size; i += 4096) {
+        if (!map_mem((void *)((uintptr_t)heap_end + i))) return false;
+    }
+
+    alloc_t *new_block = (alloc_t *)heap_end;
+    heap_end = (void *)((uintptr_t)heap_end + block_size);
+    
+    new_block->order = order;
+    new_block->used = true;
+    free(new_block->data);
+
     return true;
 }
 
@@ -43,15 +67,8 @@ void _init_malloc()
     heap_end = &_end;
     heap_end = (void *)(((uintptr_t)heap_end + 4095) & ~4095);
     heap_start = heap_end;
-    if (!grow_heap()) exit(1);
-    heap_start = heap_end - 4096;
-    alloc_t *root = (alloc_t *)heap_start;
-    root->order = MAX_ORDER;
-    root->used = false;
-    root->next = NULL;
-    root->prev = NULL;
     for (int i = 0; i <= MAX_ORDER; i++) free_lists[i] = NULL;
-    free_lists[MAX_ORDER] = root;
+    if (!grow_heap(PAGE_ORDER)) exit(1);
 }
 
 void *malloc(size_t size)
@@ -64,39 +81,34 @@ void *malloc(size_t size)
         order++;
         block_size <<= 1;
         if (order > MAX_ORDER) return NULL;
+        if (block_size == 0) return NULL; // Overflow check
     }
-    for (int o = order; o <= MAX_ORDER; o++) {
-        if (free_lists[o]) {
-            alloc_t *block = free_lists[o];
-            // remove from free list
-            free_lists[o] = block->next;
-            if (free_lists[o]) free_lists[o]->prev = NULL;
-            block->used = true;
-            // split down to order
-            for (int i = o; i > order; i--) {
-                alloc_t *buddy = (alloc_t *)((char *)block + (MIN_BLOCK_SIZE << (i - 1)));
-                buddy->order = i - 1;
-                buddy->used = false;
-                buddy->next = free_lists[i - 1];
-                buddy->prev = NULL;
-                if (free_lists[i - 1]) free_lists[i - 1]->prev = buddy;
-                free_lists[i - 1] = buddy;
-                block->order = i - 1;
+    
+    while(1) {
+        for (int o = order; o <= MAX_ORDER; o++) {
+            if (free_lists[o]) {
+                alloc_t *block = free_lists[o];
+                // remove from free list
+                free_lists[o] = block->next;
+                if (free_lists[o]) free_lists[o]->prev = NULL;
+                block->used = true;
+                // split down to order
+                for (int i = o; i > order; i--) {
+                    alloc_t *buddy = (alloc_t *)((char *)block + (MIN_BLOCK_SIZE << (i - 1)));
+                    buddy->order = i - 1;
+                    buddy->used = false;
+                    buddy->next = free_lists[i - 1];
+                    buddy->prev = NULL;
+                    if (free_lists[i - 1]) free_lists[i - 1]->prev = buddy;
+                    free_lists[i - 1] = buddy;
+                    block->order = i - 1;
+                }
+                return block->data;
             }
-            return block->data;
         }
+        // grow heap
+        if (!grow_heap(order)) return NULL;
     }
-    // grow heap
-    if (!grow_heap()) return NULL;
-    alloc_t *new_block = (alloc_t *)((char *)heap_end - 4096);
-    new_block->order = MAX_ORDER;
-    new_block->used = false;
-    new_block->next = free_lists[MAX_ORDER];
-    new_block->prev = NULL;
-    if (free_lists[MAX_ORDER]) free_lists[MAX_ORDER]->prev = new_block;
-    free_lists[MAX_ORDER] = new_block;
-    // recursive call
-    return malloc(size);
 }
 
 void free(void *ptr)
