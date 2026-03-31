@@ -2,7 +2,7 @@
 TritiumOS C Library
 
 ## Building the C Compiler
-See https://github.com/foliagecanine/tritium-compiler for information on how to build i686-tritium-gcc.
+See https://github.com/foliagecanine/tritium-compiler for information on how to build i686-tritium-gcc and i686-tritium-g++.
 
 ## Building the C Library
 First go into the make.config and change the PREFIX and CCVER.  
